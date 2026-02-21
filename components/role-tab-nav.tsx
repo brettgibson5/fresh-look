@@ -16,7 +16,7 @@ export function RoleTabNav({ tabs }: RoleTabNavProps) {
   const pathname = usePathname();
 
   return (
-    <div className="flex gap-0 border-b border-border mb-8">
+    <div className="flex gap-0">
       {tabs.map((tab) => {
         const isActive =
           pathname === tab.href || pathname.startsWith(tab.href + "/");

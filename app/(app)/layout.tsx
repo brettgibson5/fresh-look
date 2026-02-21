@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { RoleTabNav } from "@/components/role-tab-nav";
 import { requireAuth } from "@/lib/auth/server";
 import { ROLE_LABELS } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
@@ -12,12 +13,32 @@ async function logoutAction() {
   redirect("/login");
 }
 
+const MANAGEMENT_TABS = [
+  { label: "Growers", href: "/growers" },
+  { label: "Packing Employee", href: "/packing-employee" },
+  { label: "Settings", href: "/settings" },
+];
+
+const ADMIN_TABS = [
+  { label: "Growers", href: "/growers" },
+  { label: "Packing Employee", href: "/packing-employee" },
+  { label: "Settings", href: "/settings" },
+  { label: "Admin", href: "/admin/users" },
+];
+
 export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const context = await requireAuth();
+
+  const tabs =
+    context.role === "admin"
+      ? ADMIN_TABS
+      : context.role === "management"
+        ? MANAGEMENT_TABS
+        : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -42,6 +63,14 @@ export default async function AppLayout({
           </form>
         </div>
       </header>
+
+      {tabs && (
+        <div className="border-b border-border bg-card">
+          <div className="mx-auto w-full max-w-7xl px-6 pt-4">
+            <RoleTabNav tabs={tabs} />
+          </div>
+        </div>
+      )}
 
       <main className="mx-auto w-full max-w-7xl px-6 py-8">{children}</main>
     </div>

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const ThemeToggle = dynamic(
   () =>
-    import("@/app/dashboard/settings/theme-toggle").then(
+    import("@/app/(app)/settings/theme-toggle").then(
       (mod) => mod.ThemeToggle,
     ),
   { ssr: false },
