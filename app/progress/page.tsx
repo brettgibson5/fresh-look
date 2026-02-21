@@ -1514,7 +1514,9 @@ export default function ProgressPage() {
                 onClick={() => setActiveTab(tab.key)}
                 style={{
                   background: isActive ? `${tab.color}20` : "transparent",
-                  border: `1px solid ${isActive ? tab.color : "transparent"}`,
+                  borderTop: `1px solid ${isActive ? tab.color : "transparent"}`,
+                  borderLeft: `1px solid ${isActive ? tab.color : "transparent"}`,
+                  borderRight: `1px solid ${isActive ? tab.color : "transparent"}`,
                   borderBottom: "none",
                   borderRadius: "6px 6px 0 0",
                   color: isActive ? tab.color : "#64748b",
