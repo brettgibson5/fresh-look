@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fresh Look
 
-## Getting Started
+Fresh Look is a Next.js + Supabase app with role-based dashboard access.
 
-First, run the development server:
+## Phase 1 scope
+
+- Email/password login
+- Single role per user
+- Role source of truth in database (`public.profiles.role`)
+- Protected dashboard routes for:
+  - `growers`
+  - `quality_control`
+  - `management`
+  - `sanitation`
+  - `admin`
+
+## Phase 2 scope (current)
+
+- Admin role assignment in app
+- Growers create and edit work items
+- Quality control pass/fail inspections
+- Management KPI summary and recent item view
+- Sanitation intentionally deferred to Phase 3
+
+## Local setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Add `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+3. Apply SQL in Supabase SQL editor (in order):
+
+- `supabase/migrations/20260220_auth_roles.sql`
+- `supabase/migrations/20260221_phase2_mvp.sql`
+
+4. Start app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Auth + routing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `/login`: email/password sign-in
+- `/dashboard`: redirects to role route
+- `/dashboard/growers`
+- `/dashboard/quality-control`
+- `/dashboard/management`
+- `/dashboard/sanitation`
+- `/dashboard/admin`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Middleware protects `/dashboard/*` and redirects anonymous users to `/login`.
 
-## Learn More
+## Role model
 
-To learn more about Next.js, take a look at the following resources:
+`public.profiles` links to `auth.users` by user id.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `id uuid` (PK, references `auth.users.id`)
+- `role user_role` (enum)
+- `full_name text`
+- timestamps
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+RLS policies allow users to read/update their own profile and allow admin role to manage all profiles.
 
-## Deploy on Vercel
+## Phase 2 tables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `work_items`: grower submissions and QC status
+- `inspections`: QC pass/fail records for submitted items
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## QA checklist
+
+- `docs/ROLE_TEST_CHECKLIST.md`
