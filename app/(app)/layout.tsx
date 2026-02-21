@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
-import { DashboardNav } from "@/app/dashboard/dashboard-nav";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { requireAuth } from "@/lib/auth/server";
 import { ROLE_LABELS } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
@@ -14,7 +12,7 @@ async function logoutAction() {
   redirect("/login");
 }
 
-export default async function DashboardLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -30,7 +28,7 @@ export default async function DashboardLayout({
               FreshLook Platform
             </p>
             <h1 className="text-xl font-extrabold tracking-tight text-foreground">
-              Fresh Look Dashboard
+              Fresh Look
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Signed in as {ROLE_LABELS[context.role]}
@@ -45,13 +43,7 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-6 py-6 md:grid-cols-[260px_1fr]">
-        <Card className="p-4">
-          <DashboardNav currentRole={context.role} />
-        </Card>
-
-        <Card className="p-6 md:p-7">{children}</Card>
-      </div>
+      <main className="mx-auto w-full max-w-7xl px-6 py-8">{children}</main>
     </div>
   );
 }

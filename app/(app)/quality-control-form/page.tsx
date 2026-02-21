@@ -9,7 +9,7 @@ import { listQcQueue } from "@/lib/data/work-items";
 async function inspectAction(formData: FormData) {
   "use server";
 
-  const context = await requireRole(["quality_control", "admin"]);
+  const context = await requireRole(["packing_employee", "admin"]);
   const workItemId = String(formData.get("workItemId") ?? "");
   const result = String(formData.get("result") ?? "");
   const notes = String(formData.get("notes") ?? "").trim();
@@ -25,14 +25,14 @@ async function inspectAction(formData: FormData) {
     notes,
   });
 
-  revalidatePath("/dashboard/quality-control");
-  revalidatePath("/dashboard/management");
+  revalidatePath("/quality-control-form");
+  revalidatePath("/management");
 }
 
 export default async function QualityControlDashboardPage() {
-  const context = await requireRole(["quality_control", "management", "admin"]);
+  const context = await requireRole(["packing_employee", "management", "admin"]);
   const canInspect =
-    context.role === "quality_control" || context.role === "admin";
+    context.role === "packing_employee" || context.role === "admin";
   const queue = await listQcQueue();
 
   return (

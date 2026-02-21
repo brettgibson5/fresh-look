@@ -8,7 +8,8 @@
       "Bash(npx tsc:*)",
       "Bash(git mv:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git add:*)"
     ]
   }
 }

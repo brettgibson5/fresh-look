@@ -1,6 +1,6 @@
 export const USER_ROLES = [
   "growers",
-  "quality_control",
+  "packing_employee",
   "management",
   "sanitation",
   "admin",
@@ -10,18 +10,18 @@ export type UserRole = (typeof USER_ROLES)[number];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   growers: "Growers",
-  quality_control: "Quality Control",
+  packing_employee: "Packing Employee",
   management: "Management",
   sanitation: "Sanitation",
   admin: "Admin",
 };
 
 export const ROLE_DASHBOARD_PATHS: Record<UserRole, string> = {
-  growers: "/dashboard/growers",
-  quality_control: "/dashboard/quality-control",
-  management: "/dashboard/management",
-  sanitation: "/dashboard/sanitation",
-  admin: "/dashboard/admin",
+  growers: "/growers",
+  packing_employee: "/packing-employee",
+  management: "/management",
+  sanitation: "/sanitation",
+  admin: "/admin",
 };
 
 export function isUserRole(value: string): value is UserRole {

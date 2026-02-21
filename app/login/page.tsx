@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ROLE_DASHBOARD_PATHS, isUserRole } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 type LoginPageProps = {
@@ -21,7 +22,7 @@ async function loginAction(formData: FormData) {
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const nextPath = String(formData.get("next") ?? "/dashboard");
+  const nextPath = String(formData.get("next") ?? "");
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -30,7 +31,25 @@ async function loginAction(formData: FormData) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(nextPath.startsWith("/") ? nextPath : "/dashboard");
+  if (nextPath.startsWith("/")) {
+    redirect(nextPath);
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user!.id)
+    .single();
+
+  const rolePath =
+    profile && isUserRole(profile.role)
+      ? ROLE_DASHBOARD_PATHS[profile.role]
+      : "/growers";
+
+  redirect(rolePath);
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -59,7 +78,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <input
                 type="hidden"
                 name="next"
-                value={params.next ?? "/dashboard"}
+                value={params.next ?? ""}
               />
 
               <div className="space-y-2">

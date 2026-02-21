@@ -1,5 +1,7 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { ROLE_DASHBOARD_PATHS, isUserRole } from "@/lib/auth/roles";
 
 function redirectWithCookies(url: URL, response: NextResponse) {
   const redirectResponse = NextResponse.redirect(url);
@@ -13,12 +15,11 @@ function redirectWithCookies(url: URL, response: NextResponse) {
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const isDashboardRoute = pathname.startsWith("/dashboard");
   const isLoginRoute = pathname === "/login";
 
   const { response, user } = await updateSession(request);
 
-  if (isDashboardRoute && !user) {
+  if (!isLoginRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);
@@ -26,8 +27,27 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isLoginRoute && user) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: () => {},
+      },
+    });
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    const rolePath =
+      profile && isUserRole(profile.role)
+        ? ROLE_DASHBOARD_PATHS[profile.role]
+        : "/growers";
+
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = rolePath;
     url.search = "";
     return redirectWithCookies(url, response);
   }
@@ -36,5 +56,19 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: [
+    "/growers/:path*",
+    "/packing-employee/:path*",
+    "/management/:path*",
+    "/admin/:path*",
+    "/settings/:path*",
+    "/sanitation/:path*",
+    "/analytics/:path*",
+    "/packout/:path*",
+    "/packing-checklist/:path*",
+    "/operations/:path*",
+    "/history/:path*",
+    "/quality-control-form/:path*",
+    "/login",
+  ],
 };
