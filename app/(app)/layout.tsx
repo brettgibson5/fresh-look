@@ -22,8 +22,8 @@ const MANAGEMENT_TABS = [
 const ADMIN_TABS = [
   { label: "Growers", href: "/growers" },
   { label: "Packing Employee", href: "/packing-employee" },
+  { label: "Admin", href: "/admin" },
   { label: "Settings", href: "/settings" },
-  { label: "Admin", href: "/admin/users" },
 ];
 
 export default async function AppLayout({
@@ -42,11 +42,11 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-gradient-to-br from-[#0a1628] to-[#0f1f3d]">
+      <header className="border-b border-border bg-card dark:bg-linear-to-br dark:from-[#0a1628] dark:to-[#0f1f3d]">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-5">
           <div>
             <p className="mb-1 text-xs font-bold tracking-[0.15em] text-primary uppercase">
-              FreshLook Platform
+              B&C Packing Platform
             </p>
             <h1 className="text-xl font-extrabold tracking-tight text-foreground">
               Fresh Look

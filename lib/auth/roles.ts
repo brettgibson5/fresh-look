@@ -21,7 +21,7 @@ export const ROLE_DASHBOARD_PATHS: Record<UserRole, string> = {
   packing_employee: "/packing-employee",
   management: "/growers",
   sanitation: "/sanitation",
-  admin: "/admin/users",
+  admin: "/admin",
 };
 
 export function isUserRole(value: string): value is UserRole {

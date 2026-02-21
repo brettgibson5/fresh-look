@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
 type Theme = "light" | "dark";
 
@@ -19,27 +18,36 @@ export function ThemeToggle() {
     return localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
 
-  const setMode = (nextTheme: Theme) => {
-    setTheme(nextTheme);
-    applyTheme(nextTheme);
+  const toggle = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    applyTheme(next);
   };
 
   return (
-    <div className="flex gap-2">
-      <Button
-        type="button"
-        variant={theme === "light" ? "default" : "outline"}
-        onClick={() => setMode("light")}
+    <button
+      type="button"
+      role="switch"
+      aria-checked={theme === "dark"}
+      onClick={toggle}
+      className="flex items-center gap-3 cursor-pointer select-none"
+    >
+      <span className="text-sm text-muted-foreground w-8">
+        {theme === "dark" ? "Dark" : "Light"}
+      </span>
+      <span
+        className={[
+          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+          theme === "dark" ? "bg-primary" : "bg-muted border border-border",
+        ].join(" ")}
       >
-        Light
-      </Button>
-      <Button
-        type="button"
-        variant={theme === "dark" ? "default" : "outline"}
-        onClick={() => setMode("dark")}
-      >
-        Dark
-      </Button>
-    </div>
+        <span
+          className={[
+            "inline-block h-4 w-4 rounded-full bg-white shadow transition-transform",
+            theme === "dark" ? "translate-x-6" : "translate-x-1",
+          ].join(" ")}
+        />
+      </span>
+    </button>
   );
 }

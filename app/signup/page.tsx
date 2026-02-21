@@ -44,7 +44,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
       <div className="mx-auto w-full max-w-md">
         <div className="mb-6">
           <p className="mb-1 text-xs font-bold tracking-[0.15em] text-primary uppercase">
-            FreshLook Platform
+            B&C Packing Platform
           </p>
           <h1 className="text-2xl font-extrabold tracking-tight">
             Create account

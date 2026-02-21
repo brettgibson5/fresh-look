@@ -60,7 +60,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <div className="mx-auto w-full max-w-md">
         <div className="mb-6">
           <p className="mb-1 text-xs font-bold tracking-[0.15em] text-primary uppercase">
-            FreshLook Platform
+            B&C Packing Platform
           </p>
           <h1 className="text-2xl font-extrabold tracking-tight">Login</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -75,11 +75,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </CardHeader>
           <CardContent>
             <form action={loginAction} className="mt-4 space-y-4">
-              <input
-                type="hidden"
-                name="next"
-                value={params.next ?? ""}
-              />
+              <input type="hidden" name="next" value={params.next ?? ""} />
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>

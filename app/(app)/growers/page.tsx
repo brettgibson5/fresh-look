@@ -7,8 +7,8 @@ export default async function GrowersDashboardPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-extrabold tracking-tight">Growers</h2>
-      <p className="text-muted-foreground mt-1 text-sm">
+      <h2 className="text-2xl font-semibold">Growers</h2>
+      <p className="text-muted-foreground mt-2 text-sm">
         Select an app to get started.
       </p>
       <div className="mt-8">

@@ -7,10 +7,8 @@ export default async function PackingEmployeeDashboardPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-extrabold tracking-tight">
-        Packing Employee
-      </h2>
-      <p className="text-muted-foreground mt-1 text-sm">
+      <h2 className="text-2xl font-semibold">Packing Employee</h2>
+      <p className="text-muted-foreground mt-2 text-sm">
         Select an app to get started.
       </p>
       <div className="mt-8">
