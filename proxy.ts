@@ -63,12 +63,6 @@ export const config = {
     "/admin/:path*",
     "/settings/:path*",
     "/sanitation/:path*",
-    "/analytics/:path*",
-    "/packout/:path*",
-    "/packing-checklist/:path*",
-    "/operations/:path*",
-    "/history/:path*",
-    "/quality-control-form/:path*",
     "/login",
   ],
 };
