@@ -32,7 +32,7 @@ export function DashboardNav({ currentRole }: DashboardNavProps) {
           <Button
             key={role}
             asChild
-            variant={isActive ? "default" : "ghost"}
+            variant={isActive ? "default" : "outline"}
             className="w-full justify-start"
           >
             <Link href={href} prefetch>
@@ -41,6 +41,16 @@ export function DashboardNav({ currentRole }: DashboardNavProps) {
           </Button>
         );
       })}
+
+      <Button
+        asChild
+        variant={pathname === "/dashboard/settings" ? "default" : "outline"}
+        className="w-full justify-start"
+      >
+        <Link href="/dashboard/settings" prefetch>
+          Settings
+        </Link>
+      </Button>
     </nav>
   );
 }

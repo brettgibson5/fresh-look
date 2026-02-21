@@ -1,13 +1,22 @@
-# Role Test Checklist
+# App QA Checklist
 
-Use this checklist after schema changes, auth changes, or dashboard updates.
+Use this checklist after schema, auth, settings, or dashboard changes.
 
 ## 0) Preconditions
 
 - `.env.local` has valid Supabase values.
-- SQL migrations applied in order:
+- Baseline SQL migrations applied in order:
   - `supabase/migrations/20260220_auth_roles.sql`
   - `supabase/migrations/20260221_phase2_mvp.sql`
+  - `supabase/migrations/20260221_settings_profile.sql`
+  - `supabase/migrations/20260221_progress_tracker_state.sql`
+  - `supabase/migrations/20260221_progress_tracker_hardening.sql`
+- Migration quick map:
+  - `20260220_auth_roles.sql`: creates role enum, `public.profiles`, and core role/auth RLS policies.
+  - `20260221_phase2_mvp.sql`: adds `work_items` and `inspections` with workflow policies.
+  - `20260221_settings_profile.sql`: adds `profiles.avatar_url` and avatar storage bucket/policies.
+  - `20260221_progress_tracker_state.sql`: adds public progress-tracker state row used by `/progress`.
+  - `20260221_progress_tracker_hardening.sql`: validates progress payload JSON shape (`object`).
 - Test users exist for each role:
   - `growers`
   - `quality_control`
@@ -82,6 +91,13 @@ from public.work_items
 group by status
 order by status;
 ```
+
+## 7.1) Settings/avatar checks
+
+- On `/dashboard/settings`, update display name and verify it persists after refresh.
+- Upload profile photo and confirm preview renders.
+- Delete profile photo and confirm preview is cleared.
+- Confirm users cannot manage another user's avatar path in storage (folder must match `auth.uid()`).
 
 ## 8) Done criteria
 

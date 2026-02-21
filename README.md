@@ -41,6 +41,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 - `supabase/migrations/20260220_auth_roles.sql`
 - `supabase/migrations/20260221_phase2_mvp.sql`
+- `supabase/migrations/20260221_settings_profile.sql`
+- `supabase/migrations/20260221_progress_tracker_state.sql`
+- `supabase/migrations/20260221_progress_tracker_hardening.sql`
+
+Migration quick map:
+
+- `20260220_auth_roles.sql`: role enum, `public.profiles`, auth/role RLS baseline.
+- `20260221_phase2_mvp.sql`: `work_items` + `inspections` workflow tables and policies.
+- `20260221_settings_profile.sql`: avatar profile field plus avatar storage bucket/policies.
+- `20260221_progress_tracker_state.sql`: public singleton row for `/progress` checklist state persistence.
+- `20260221_progress_tracker_hardening.sql`: constrains progress payload to JSON object shape.
 
 4. Start app:
 
@@ -78,4 +89,4 @@ RLS policies allow users to read/update their own profile and allow admin role t
 
 ## QA checklist
 
-- `docs/ROLE_TEST_CHECKLIST.md`
+- `docs/APP_QA_CHECKLIST.md`

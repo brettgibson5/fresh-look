@@ -22,12 +22,17 @@ export default async function DashboardLayout({
   const context = await requireAuth();
 
   return (
-    <div className="bg-muted/30 min-h-screen">
-      <header className="bg-background border-b">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border bg-gradient-to-br from-[#0a1628] to-[#0f1f3d]">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-5">
           <div>
-            <h1 className="text-xl font-semibold">Fresh Look Dashboard</h1>
-            <p className="text-muted-foreground text-sm">
+            <p className="mb-1 text-xs font-bold tracking-[0.15em] text-primary uppercase">
+              FreshLook Platform
+            </p>
+            <h1 className="text-xl font-extrabold tracking-tight text-foreground">
+              Fresh Look Dashboard
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Signed in as {ROLE_LABELS[context.role]}
             </p>
           </div>
@@ -40,12 +45,12 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-6 py-6 md:grid-cols-[240px_1fr]">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-6 py-6 md:grid-cols-[260px_1fr]">
         <Card className="p-4">
           <DashboardNav currentRole={context.role} />
         </Card>
 
-        <Card className="p-6">{children}</Card>
+        <Card className="p-6 md:p-7">{children}</Card>
       </div>
     </div>
   );
