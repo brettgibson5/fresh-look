@@ -1,9 +1,9 @@
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ConfirmSubmitButton } from "@/app/dashboard/settings/confirm-submit-button";
-import { PasswordForm } from "@/app/dashboard/settings/password-form";
-import { ThemeToggleWrapper } from "@/app/dashboard/settings/theme-toggle-wrapper";
+import { ConfirmSubmitButton } from "@/app/(app)/settings/confirm-submit-button";
+import { PasswordForm } from "@/app/(app)/settings/password-form";
+import { ThemeToggleWrapper } from "@/app/(app)/settings/theme-toggle-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,11 +41,11 @@ async function updateDisplayNameAction(formData: FormData) {
     .eq("id", context.userId);
 
   if (error) {
-    redirect(`/dashboard/settings?error=${encodeURIComponent(error.message)}`);
+    redirect(`/settings?error=${encodeURIComponent(error.message)}`);
   }
 
-  revalidatePath("/dashboard/settings");
-  redirect("/dashboard/settings?success=Display%20name%20updated");
+  revalidatePath("/settings");
+  redirect("/settings?success=Display%20name%20updated");
 }
 
 async function updatePasswordAction(formData: FormData) {
@@ -59,22 +59,22 @@ async function updatePasswordAction(formData: FormData) {
 
   if (!password || password.length < 8) {
     redirect(
-      "/dashboard/settings?error=Password%20must%20be%20at%20least%208%20characters",
+      "/settings?error=Password%20must%20be%20at%20least%208%20characters",
     );
   }
 
   if (password !== confirmPassword) {
-    redirect("/dashboard/settings?error=Passwords%20do%20not%20match");
+    redirect("/settings?error=Passwords%20do%20not%20match");
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({ password });
 
   if (error) {
-    redirect(`/dashboard/settings?error=${encodeURIComponent(error.message)}`);
+    redirect(`/settings?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect("/dashboard/settings?success=Password%20updated");
+  redirect("/settings?success=Password%20updated");
 }
 
 async function updatePhotoAction(formData: FormData) {
@@ -84,7 +84,7 @@ async function updatePhotoAction(formData: FormData) {
   const avatar = formData.get("avatar");
 
   if (!(avatar instanceof File) || avatar.size === 0) {
-    redirect("/dashboard/settings?error=Please%20select%20an%20image%20file");
+    redirect("/settings?error=Please%20select%20an%20image%20file");
   }
 
   const safeName = avatar.name.replace(/\s+/g, "-").toLowerCase();
@@ -101,7 +101,7 @@ async function updatePhotoAction(formData: FormData) {
 
   if (uploadError) {
     redirect(
-      `/dashboard/settings?error=${encodeURIComponent(uploadError.message)}`,
+      `/settings?error=${encodeURIComponent(uploadError.message)}`,
     );
   }
 
@@ -114,12 +114,12 @@ async function updatePhotoAction(formData: FormData) {
 
   if (profileError) {
     redirect(
-      `/dashboard/settings?error=${encodeURIComponent(profileError.message)}`,
+      `/settings?error=${encodeURIComponent(profileError.message)}`,
     );
   }
 
-  revalidatePath("/dashboard/settings");
-  redirect("/dashboard/settings?success=Photo%20updated");
+  revalidatePath("/settings");
+  redirect("/settings?success=Photo%20updated");
 }
 
 async function deletePhotoAction() {
@@ -136,7 +136,7 @@ async function deletePhotoAction() {
 
   if (profileFetchError) {
     redirect(
-      `/dashboard/settings?error=${encodeURIComponent(profileFetchError.message)}`,
+      `/settings?error=${encodeURIComponent(profileFetchError.message)}`,
     );
   }
 
@@ -151,7 +151,7 @@ async function deletePhotoAction() {
 
       if (removeError) {
         redirect(
-          `/dashboard/settings?error=${encodeURIComponent(removeError.message)}`,
+          `/settings?error=${encodeURIComponent(removeError.message)}`,
         );
       }
     }
@@ -164,12 +164,12 @@ async function deletePhotoAction() {
 
   if (updateError) {
     redirect(
-      `/dashboard/settings?error=${encodeURIComponent(updateError.message)}`,
+      `/settings?error=${encodeURIComponent(updateError.message)}`,
     );
   }
 
-  revalidatePath("/dashboard/settings");
-  redirect("/dashboard/settings?success=Photo%20deleted");
+  revalidatePath("/settings");
+  redirect("/settings?success=Photo%20deleted");
 }
 
 export default async function SettingsPage({
