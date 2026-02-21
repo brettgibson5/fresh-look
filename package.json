@@ -1,5 +1,5 @@
 {
-  "name": "freshlook-temp",
+  "name": "fresh-look",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.96.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
