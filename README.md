@@ -1,26 +1,6 @@
 # Fresh Look
 
-Fresh Look is a Next.js + Supabase app with role-based dashboard access.
-
-## Phase 1 scope
-
-- Email/password login
-- Single role per user
-- Role source of truth in database (`public.profiles.role`)
-- Protected dashboard routes for:
-  - `growers`
-  - `quality_control`
-  - `management`
-  - `sanitation`
-  - `admin`
-
-## Phase 2 scope (current)
-
-- Admin role assignment in app
-- Growers create and edit work items
-- Quality control pass/fail inspections
-- Management KPI summary and recent item view
-- Sanitation intentionally deferred to Phase 3
+Fresh Look is a Next.js + Supabase app with role-based dashboard access for a packing/growers workforce.
 
 ## Local setup
 
@@ -35,23 +15,32 @@ npm install
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 ```
 
-3. Apply SQL in Supabase SQL editor (in order):
+> `SUPABASE_SERVICE_ROLE_KEY` is required for admin operations (invite, delete, ban users). Get it from Supabase dashboard → Project Settings → API → service_role secret.
 
-- `supabase/migrations/20260220_auth_roles.sql`
-- `supabase/migrations/20260221_phase2_mvp.sql`
-- `supabase/migrations/20260221_settings_profile.sql`
-- `supabase/migrations/20260221_progress_tracker_state.sql`
-- `supabase/migrations/20260221_progress_tracker_hardening.sql`
+3. Apply SQL migrations in order in the Supabase SQL editor:
 
-Migration quick map:
+```
+supabase/migrations/20260220_auth_roles.sql
+supabase/migrations/20260221_phase2_mvp.sql
+supabase/migrations/20260221_settings_profile.sql
+supabase/migrations/20260221_progress_tracker_state.sql
+supabase/migrations/20260221_progress_tracker_hardening.sql
+supabase/migrations/20260222_first_last_name.sql
+```
 
-- `20260220_auth_roles.sql`: role enum, `public.profiles`, auth/role RLS baseline.
-- `20260221_phase2_mvp.sql`: `work_items` + `inspections` workflow tables and policies.
-- `20260221_settings_profile.sql`: avatar profile field plus avatar storage bucket/policies.
-- `20260221_progress_tracker_state.sql`: public singleton row for `/progress` checklist state persistence.
-- `20260221_progress_tracker_hardening.sql`: constrains progress payload to JSON object shape.
+Migration summary:
+
+| File | Description |
+|---|---|
+| `20260220_auth_roles.sql` | Role enum, `public.profiles` table, auth/role RLS baseline |
+| `20260221_phase2_mvp.sql` | `work_items` + `inspections` workflow tables and policies |
+| `20260221_settings_profile.sql` | `avatar_url` profile field + avatar storage bucket/policies |
+| `20260221_progress_tracker_state.sql` | Public singleton row for `/progress` checklist state persistence |
+| `20260221_progress_tracker_hardening.sql` | Constrains progress payload to JSON object shape |
+| `20260222_first_last_name.sql` | Splits `full_name` into `first_name` + `last_name` on `profiles` |
 
 4. Start app:
 
@@ -61,32 +50,51 @@ npm run dev
 
 ## Auth + routing
 
-- `/login`: email/password sign-in
-- `/dashboard`: redirects to role route
-- `/dashboard/growers`
-- `/dashboard/quality-control`
-- `/dashboard/management`
-- `/dashboard/sanitation`
-- `/dashboard/admin`
+- `/login` — email/password sign-in, redirects to role home on success
+- `/growers` — growers icon grid
+- `/packing-employee` — packing employee icon grid
+- `/management` — redirects to `/growers` (management sees growers view by default)
+- `/admin` — admin icon grid
+- `/admin/users` — user management table
+- `/settings` — shared settings page (all roles)
+- `/sanitation` — sanitation role home
 
-Middleware protects `/dashboard/*` and redirects anonymous users to `/login`.
+Proxy (`proxy.ts`) protects all role routes and redirects unauthenticated users to `/login?next=<path>`.
 
-## Role model
+## Roles
 
-`public.profiles` links to `auth.users` by user id.
+| Role | Home | Tab nav |
+|---|---|---|
+| `growers` | `/growers` | None |
+| `packing_employee` | `/packing-employee` | None |
+| `management` | `/growers` | Growers, Packing Employee, Settings |
+| `sanitation` | `/sanitation` | None |
+| `admin` | `/admin` | Growers, Packing Employee, Admin, Settings |
 
-- `id uuid` (PK, references `auth.users.id`)
-- `role user_role` (enum)
-- `full_name text`
-- timestamps
+## `public.profiles` schema
 
-RLS policies allow users to read/update their own profile and allow admin role to manage all profiles.
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK, references `auth.users.id` on delete cascade |
+| `role` | `user_role` enum | `growers`, `packing_employee`, `management`, `sanitation`, `admin` |
+| `first_name` | `text` | Optional |
+| `last_name` | `text` | Optional |
+| `email` | `text` | Synced from auth.users |
+| `avatar_url` | `text` | Optional profile photo URL |
+| `created_at` | `timestamptz` | Auto |
+| `updated_at` | `timestamptz` | Auto |
 
-## Phase 2 tables
+RLS policies allow users to read/update their own profile; admin role can manage all profiles. Role changes are also enforced by a DB trigger (`prevent_non_admin_role_change`).
 
-- `work_items`: grower submissions and QC status
-- `inspections`: QC pass/fail records for submitted items
+## Admin user management (`/admin/users`)
 
-## QA checklist
+Requires `SUPABASE_SERVICE_ROLE_KEY`. Features:
 
-- `docs/APP_QA_CHECKLIST.md`
+- Invite user by email (sends Supabase invite email)
+- Edit first/last name and email
+- Change role (inline dropdown)
+- Send password reset email
+- Ban / unban (disables login without deleting)
+- Delete user (cascades to profile)
+- Search by email or name
+- Last sign-in date and Active/Banned status badge

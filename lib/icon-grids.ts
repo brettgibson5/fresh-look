@@ -5,6 +5,7 @@ import {
   ClipboardList,
   History,
   PackageOpen,
+  Users,
   Wrench,
 } from "lucide-react";
 
@@ -12,6 +13,10 @@ export const GROWERS_ICONS = [
   { label: "Analytics", href: "/growers/analytics", icon: BarChart3, color: "#3b82f6" },
   { label: "Quality Control", href: "/growers/quality-control", icon: ClipboardCheck, color: "#10b981" },
   { label: "Packout", href: "/growers/packout", icon: PackageOpen, color: "#f59e0b" },
+];
+
+export const ADMIN_ICONS = [
+  { label: "Users", href: "/admin/users", icon: Users, color: "#6366f1" },
 ];
 
 export const PACKING_ICONS = [

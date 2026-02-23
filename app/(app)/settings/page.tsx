@@ -32,12 +32,13 @@ async function updateDisplayNameAction(formData: FormData) {
   "use server";
 
   const context = await requireAuth();
-  const fullName = String(formData.get("fullName") ?? "").trim();
+  const firstName = String(formData.get("firstName") ?? "").trim();
+  const lastName = String(formData.get("lastName") ?? "").trim();
 
   const supabase = await createClient();
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name: fullName || null })
+    .update({ first_name: firstName || null, last_name: lastName || null })
     .eq("id", context.userId);
 
   if (error) {
@@ -45,7 +46,7 @@ async function updateDisplayNameAction(formData: FormData) {
   }
 
   revalidatePath("/settings");
-  redirect("/settings?success=Display%20name%20updated");
+  redirect("/settings?success=Name%20updated");
 }
 
 async function updatePasswordAction(formData: FormData) {
@@ -181,12 +182,15 @@ export default async function SettingsPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, email, avatar_url")
+    .select("first_name, last_name, email, avatar_url")
     .eq("id", context.userId)
     .maybeSingle();
 
-  const initialSource = profile?.full_name || profile?.email || "U";
-  const initials = initialSource.trim().charAt(0).toUpperCase();
+  const initials = (
+    profile?.first_name?.charAt(0) ||
+    profile?.email?.charAt(0) ||
+    "U"
+  ).toUpperCase();
 
   return (
     <div className="space-y-8">
@@ -198,18 +202,31 @@ export default async function SettingsPage({
       </div>
 
       <section className="space-y-4 rounded-lg border p-4">
-        <h3 className="font-medium">Display name</h3>
+        <h3 className="font-medium">Name</h3>
         <form
           action={updateDisplayNameAction}
           className="grid gap-3 md:max-w-md"
         >
-          <Label htmlFor="fullName">Name</Label>
-          <Input
-            id="fullName"
-            name="fullName"
-            defaultValue={profile?.full_name ?? ""}
-            placeholder="Your display name"
-          />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-2">
+              <Label htmlFor="firstName">First name</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                defaultValue={profile?.first_name ?? ""}
+                placeholder="First"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lastName">Last name</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                defaultValue={profile?.last_name ?? ""}
+                placeholder="Last"
+              />
+            </div>
+          </div>
           <Button type="submit" className="w-fit">
             Save name
           </Button>
