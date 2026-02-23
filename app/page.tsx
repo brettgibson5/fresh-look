@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 import {
   Card,
   CardContent,
@@ -28,8 +29,8 @@ export default function Home() {
       </header>
 
       <section className="mx-auto grid w-full max-w-7xl gap-6 px-6 py-8 lg:grid-cols-[1.15fr_0.85fr]">
-        <Card className="p-1">
-          <CardHeader>
+        <Card className="p-6">
+          <CardHeader className="px-0 pb-6">
             <CardTitle className="text-3xl font-extrabold tracking-tight text-balance">
               From field to facility, quality stays visible at every step.
             </CardTitle>
@@ -39,7 +40,7 @@ export default function Home() {
               inspections, and operational visibility.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-0 pb-0">
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/login">Login</Link>
@@ -47,15 +48,12 @@ export default function Home() {
               <Button asChild size="lg" variant="outline">
                 <Link href="/signup">Sign up</Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/progress">Client progress</Link>
-              </Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="p-1">
-          <CardHeader>
+        <Card className="p-6">
+          <CardHeader className="px-0 pb-6">
             <CardTitle className="text-lg">
               Built for agriculture teams
             </CardTitle>
@@ -64,7 +62,7 @@ export default function Home() {
               sanitation, and admin.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-0 pb-0">
             <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
               <li>• Growers submit and track work items by lot.</li>
               <li>• QC records pass/fail inspections in real time.</li>
@@ -74,6 +72,7 @@ export default function Home() {
           </CardContent>
         </Card>
       </section>
+      <Footer />
     </main>
   );
 }

@@ -28,7 +28,7 @@ export function RoleTabNav({ tabs }: RoleTabNavProps) {
               "px-5 py-2.5 text-sm font-semibold border-t border-l border-r rounded-t-md -mb-px transition-colors",
               isActive
                 ? "bg-card border-border text-foreground"
-                : "bg-muted/40 border-transparent text-muted-foreground hover:text-foreground",
+                : "bg-muted/40 border-border/40 text-muted-foreground hover:text-foreground",
             ].join(" ")}
           >
             {tab.label}

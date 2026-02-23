@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { RoleTabNav } from "@/components/role-tab-nav";
 import { requireAuth } from "@/lib/auth/server";
 import { ROLE_LABELS } from "@/lib/auth/roles";
@@ -12,6 +14,16 @@ async function logoutAction() {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+const GROWER_TABS = [
+  { label: "Growers", href: "/growers" },
+  { label: "Settings", href: "/settings" },
+];
+
+const PACKING_EMPLOYEE_TABS = [
+  { label: "Packing Employee", href: "/packing-employee" },
+  { label: "Settings", href: "/settings" },
+];
 
 const MANAGEMENT_TABS = [
   { label: "Growers", href: "/growers" },
@@ -38,7 +50,9 @@ export default async function AppLayout({
       ? ADMIN_TABS
       : context.role === "management"
         ? MANAGEMENT_TABS
-        : null;
+        : context.role === "packing_employee"
+          ? PACKING_EMPLOYEE_TABS
+          : GROWER_TABS;
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,7 +86,11 @@ export default async function AppLayout({
         </div>
       )}
 
-      <main className="mx-auto w-full max-w-7xl px-6 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-7xl px-6 py-8">
+        <Breadcrumb />
+        {children}
+      </main>
+      <Footer />
     </div>
   );
 }
